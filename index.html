@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light only">
+<meta name="supported-color-schemes" content="light">
+<title>Sabrina's Bakery — Menu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    color-scheme: light only;
+    --bg: #ffffff;
+    --ink: #15110d;
+    --muted: #8a847b;
+    --line: #ebe7e0;
+    --line-soft: #f3efe9;
+    --accent: #6b3410;
+    --accent-soft: #f8f4ee;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    font-weight: 300;
+    -webkit-font-smoothing: antialiased;
+    padding-bottom: 120px;
+  }
+
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 28px;
+  }
+
+  /* Header */
+  header {
+    padding: 100px 0 70px;
+    text-align: center;
+    border-bottom: 1px solid var(--line-soft);
+  }
+
+  .eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 28px;
+  }
+
+  h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400;
+    font-size: clamp(48px, 9vw, 76px);
+    line-height: 1;
+    letter-spacing: -0.015em;
+    margin-bottom: 22px;
+  }
+
+  h1 em {
+    font-style: italic;
+    font-weight: 300;
+  }
+
+  .tagline {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 19px;
+    color: var(--muted);
+    max-width: 440px;
+    margin: 0 auto;
+    letter-spacing: 0.005em;
+  }
+
+  /* Menu */
+  .menu {
+    padding: 70px 0 40px;
+  }
+
+  .section-label {
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 36px;
+  }
+
+  .item {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 24px;
+    padding: 32px 0;
+    border-bottom: 1px solid var(--line-soft);
+    align-items: start;
+  }
+
+  .item-info h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 500;
+    font-size: 26px;
+    line-height: 1.15;
+    margin-bottom: 8px;
+    letter-spacing: -0.005em;
+  }
+
+  .item-info p {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 16px;
+    font-weight: 300;
+  }
+
+  .item-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400;
+    font-size: 19px;
+    color: var(--ink);
+    font-style: italic;
+  }
+
+  .qty {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 100px;
+    padding: 6px 8px;
+    width: fit-content;
+  }
+
+  .qty button {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+    font-size: 16px;
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400;
+    transition: background 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .qty button:hover {
+    background: var(--accent-soft);
+  }
+
+  .qty button:disabled {
+    opacity: 0.25;
+    cursor: not-allowed;
+  }
+
+  .qty-value {
+    min-width: 16px;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  /* Per-item options (revealed when qty > 0) */
+  .options {
+    grid-column: 1 / -1;
+    display: none;
+    flex-direction: column;
+    gap: 14px;
+    padding: 18px 0 4px;
+    margin-top: 4px;
+  }
+
+  .item.has-qty .options {
+    display: flex;
+  }
+
+  .option-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .option-label {
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+
+  .option-choices {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .chip {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    padding: 6px 14px;
+    border-radius: 100px;
+    border: 1px solid var(--line);
+    background: var(--bg);
+    color: var(--ink);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .chip:hover {
+    border-color: var(--ink);
+  }
+
+  .chip.selected {
+    background: var(--ink);
+    color: var(--bg);
+    border-color: var(--ink);
+  }
+
+  /* Form */
+  .customer-form {
+    padding: 50px 0;
+    border-top: 1px solid var(--line-soft);
+    margin-top: 20px;
+  }
+
+  .field {
+    margin-bottom: 24px;
+  }
+
+  label {
+    display: block;
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+
+  input, textarea {
+    width: 100%;
+    padding: 10px 0;
+    border: none;
+    border-bottom: 1px solid var(--line);
+    background: transparent;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    color: var(--ink);
+    transition: border-color 0.2s;
+  }
+
+  input:focus, textarea:focus {
+    outline: none;
+    border-bottom-color: var(--ink);
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 60px;
+  }
+
+  /* Sticky cart bar */
+  .cart-bar {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(140px);
+    background: var(--ink);
+    color: var(--bg);
+    border-radius: 100px;
+    padding: 14px 8px 14px 28px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    box-shadow: 0 16px 48px rgba(21, 17, 13, 0.16);
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    z-index: 100;
+    max-width: calc(100% - 40px);
+  }
+
+  .cart-bar.visible {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .cart-summary {
+    font-size: 14px;
+    white-space: nowrap;
+    font-weight: 400;
+  }
+
+  .cart-summary strong {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 500;
+    font-size: 18px;
+    margin-left: 8px;
+    font-style: italic;
+  }
+
+  .checkout-btn {
+    background: var(--bg);
+    color: var(--ink);
+    border: none;
+    padding: 11px 24px;
+    border-radius: 100px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .checkout-btn:hover {
+    opacity: 0.92;
+  }
+
+  /* Confirmation */
+  .confirmation {
+    display: none;
+    padding: 80px 0;
+    text-align: center;
+  }
+
+  .confirmation.active {
+    display: block;
+  }
+
+  .confirmation h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400;
+    font-size: 48px;
+    margin-bottom: 18px;
+    letter-spacing: -0.01em;
+  }
+
+  .confirmation p {
+    color: var(--muted);
+    margin-bottom: 36px;
+    max-width: 420px;
+    margin-left: auto;
+    margin-right: auto;
+    font-weight: 300;
+  }
+
+  .venmo-btn {
+    display: inline-block;
+    background: var(--ink);
+    color: var(--bg);
+    text-decoration: none;
+    padding: 16px 40px;
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    transition: opacity 0.2s;
+  }
+
+  .venmo-btn:hover {
+    opacity: 0.88;
+  }
+
+  .order-summary {
+    background: var(--accent-soft);
+    border: 1px solid var(--line-soft);
+    border-radius: 8px;
+    padding: 28px;
+    margin: 36px auto;
+    max-width: 420px;
+    text-align: left;
+  }
+
+  .order-summary .line {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    font-size: 14px;
+    font-weight: 300;
+  }
+
+  .order-summary .total {
+    border-top: 1px solid var(--line);
+    margin-top: 10px;
+    padding-top: 18px;
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 500;
+    font-style: italic;
+    font-size: 20px;
+  }
+
+  .menu.hidden, .customer-form.hidden { display: none; }
+
+  /* Subtle stagger animation on load */
+  .item {
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards;
+  }
+  .item:nth-child(2) { animation-delay: 0.05s; }
+  .item:nth-child(3) { animation-delay: 0.1s; }
+  .item:nth-child(4) { animation-delay: 0.15s; }
+  .item:nth-child(5) { animation-delay: 0.2s; }
+  .item:nth-child(6) { animation-delay: 0.25s; }
+  .item:nth-child(7) { animation-delay: 0.3s; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<div id="ordering-view">
+  <header>
+    <div class="container">
+      <div class="eyebrow">Small Batch · Made to Order</div>
+      <h1>Sabrina's <em>Bakery</em></h1>
+      <p class="tagline">Fresh from the oven, ordered with love.</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="menu" id="menu">
+      <div class="section-label">— The Menu</div>
+
+      <!-- Items. Set data-price as a plain number (no $). -->
+      <div class="item" data-name="Plain Sourdough Loaf" data-price="8">
+        <div class="item-info">
+          <h3>Plain Sourdough Loaf</h3>
+          <p>Naturally leavened, crackly crust, soft chewy interior.</p>
+          <div class="item-price">$8 / loaf</div>
+        </div>
+        <div class="qty"><button class="dec" aria-label="Decrease">−</button><span class="qty-value">0</span><button class="inc" aria-label="Increase">+</button></div>
+      </div>
+
+      <div class="item" data-name="Pretzel Sourdough Loaf" data-price="9">
+        <div class="item-info">
+          <h3>Pretzel Sourdough Loaf</h3>
+          <p>Deep mahogany crust, flaky sea salt on top.</p>
+          <div class="item-price">$9 / loaf</div>
+        </div>
+        <div class="qty"><button class="dec" aria-label="Decrease">−</button><span class="qty-value">0</span><button class="inc" aria-label="Increase">+</button></div>
+      </div>
+
+      <div class="item" data-name="Mini Sourdough Loaves (4-pack)" data-price="7" data-options="Everything bagel seasoning?|Plain,Everything">
+        <div class="item-info">
+          <h3>Mini Sourdough Loaves</h3>
+          <p>A batch of four. Plain, or topped with everything bagel seasoning.</p>
+          <div class="item-price">$7 / four</div>
+        </div>
+        <div class="qty"><button class="dec" aria-label="Decrease">−</button><span class="qty-value">0</span><button class="inc" aria-label="Increase">+</button></div>
+      </div>
+
+      <div class="item" data-name="Mini Pretzel Sourdough Loaves (4-pack)" data-price="7" data-options="Everything bagel seasoning?|Plain,Everything">
+        <div class="item-info">
+          <h3>Mini Pretzel Sourdough Loaves</h3>
+          <p>A batch of four. Plain, or topped with everything bagel seasoning.</p>
+          <div class="item-price">$7 / four</div>
+        </div>
+        <div class="qty"><button class="dec" aria-label="Decrease">−</button><span class="qty-value">0</span><button class="inc" aria-label="Increase">+</button></div>
+      </div>
+
+      <div class="item" data-name="Sourdough with Mix-ins" data-price="10" data-options="Base|Plain,Pretzel;Mix-in|Jalapeño Cheddar,White Chocolate Raspberry,S'mores,Pizza">
+        <div class="item-info">
+          <h3>Sourdough with Mix-ins</h3>
+          <p>Plain or pretzel base, loaded with one of: jalapeño cheddar, white chocolate raspberry, s'mores, or pizza.</p>
+          <div class="item-price">$10 / loaf</div>
+        </div>
+        <div class="qty"><button class="dec" aria-label="Decrease">−</button><span class="qty-value">0</span><button class="inc" aria-label="Increase">+</button></div>
+      </div>
+      <!-- /items -->
+    </section>
+
+    <section class="customer-form" id="customer-form">
+      <div class="section-label">— Your Details</div>
+      <div class="field">
+        <label for="name">Name</label>
+        <input type="text" id="name" required>
+      </div>
+      <div class="field">
+        <label for="phone">Phone</label>
+        <input type="tel" id="phone" required>
+      </div>
+      <div class="field">
+        <label for="pickup">Pickup day / notes</label>
+        <textarea id="pickup" placeholder="e.g. Saturday after class, allergies, etc."></textarea>
+      </div>
+    </section>
+  </main>
+
+  <div class="cart-bar" id="cart-bar">
+    <div class="cart-summary"><span id="cart-count">0 items</span><strong id="cart-total">$0</strong></div>
+    <button class="checkout-btn" id="checkout-btn">Place Order →</button>
+  </div>
+</div>
+
+<!-- Confirmation view shown after submit -->
+<div class="confirmation container" id="confirmation">
+  <div class="eyebrow" style="margin-top:60px;">— Order Sent</div>
+  <h2>Thank you.</h2>
+  <p>We've received your order and will confirm pickup shortly. Send payment via Venmo to lock it in.</p>
+
+  <div class="order-summary" id="order-summary"></div>
+
+  <a href="#" class="venmo-btn" id="venmo-link" target="_blank" rel="noopener">Pay on Venmo</a>
+</div>
+
+<script>
+  // ============ CONFIGURATION ============
+  // Replace these three values once you have them set up.
+  const CONFIG = {
+    venmoUsername: 'Sabrina-SpratNewman',         // e.g. 'jane-baker' (no @)
+    formspreeEndpoint: 'https://formspree.io/f/mbdwloozL',    // e.g. 'https://formspree.io/f/abc123xyz'
+    bakeryName: "Sabrina's Bakery"
+  };
+  // =======================================
+
+  // Build option UI for items that have data-options
+  // Format: "Question 1|Choice A,Choice B;Question 2|Choice C,Choice D"
+  document.querySelectorAll('.item[data-options]').forEach(item => {
+    const groups = item.dataset.options.split(';').map(g => {
+      const [label, choicesStr] = g.split('|');
+      return { label: label.trim(), choices: choicesStr.split(',').map(c => c.trim()) };
+    });
+
+    const optionsEl = document.createElement('div');
+    optionsEl.className = 'options';
+
+    groups.forEach((group, gi) => {
+      const row = document.createElement('div');
+      row.className = 'option-row';
+      row.innerHTML = `<span class="option-label">${group.label}</span>`;
+      const choicesEl = document.createElement('div');
+      choicesEl.className = 'option-choices';
+      group.choices.forEach((choice, ci) => {
+        const chip = document.createElement('button');
+        chip.className = 'chip' + (ci === 0 ? ' selected' : '');
+        chip.dataset.group = group.label;
+        chip.dataset.value = choice;
+        chip.textContent = choice;
+        chip.addEventListener('click', () => {
+          choicesEl.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+          chip.classList.add('selected');
+        });
+        choicesEl.appendChild(chip);
+      });
+      row.appendChild(choicesEl);
+      optionsEl.appendChild(row);
+    });
+
+    item.appendChild(optionsEl);
+  });
+
+  // Quantity controls
+  document.querySelectorAll('.item').forEach(item => {
+    const valueEl = item.querySelector('.qty-value');
+    const dec = item.querySelector('.dec');
+    const inc = item.querySelector('.inc');
+    let qty = 0;
+
+    const update = () => {
+      valueEl.textContent = qty;
+      item.dataset.qty = qty;
+      item.classList.toggle('has-qty', qty > 0);
+      dec.disabled = qty === 0;
+      updateCart();
+    };
+
+    dec.addEventListener('click', () => { if (qty > 0) { qty--; update(); } });
+    inc.addEventListener('click', () => { qty++; update(); });
+    update();
+  });
+
+  function getItemOptionsString(item) {
+    const chips = item.querySelectorAll('.options .chip.selected');
+    if (chips.length === 0) return '';
+    return Array.from(chips).map(c => c.textContent).join(', ');
+  }
+
+  function getCart() {
+    const items = [];
+    let total = 0, count = 0;
+    document.querySelectorAll('.item').forEach(item => {
+      const qty = parseInt(item.dataset.qty || 0);
+      if (qty > 0) {
+        const name = item.dataset.name;
+        const price = parseFloat(item.dataset.price);
+        const options = getItemOptionsString(item);
+        const lineTotal = qty * price;
+        items.push({ name, qty, price, options, lineTotal });
+        total += lineTotal;
+        count += qty;
+      }
+    });
+    return { items, total, count };
+  }
+
+  function updateCart() {
+    const { count, total } = getCart();
+    const bar = document.getElementById('cart-bar');
+    document.getElementById('cart-count').textContent = `${count} item${count === 1 ? '' : 's'}`;
+    document.getElementById('cart-total').textContent = `$${total.toFixed(2)}`;
+    bar.classList.toggle('visible', count > 0);
+  }
+
+  // Checkout
+  document.getElementById('checkout-btn').addEventListener('click', async () => {
+    const cart = getCart();
+    const name = document.getElementById('name').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const pickup = document.getElementById('pickup').value.trim();
+
+    if (!name || !phone) {
+      alert('Please add your name and phone number.');
+      document.getElementById('customer-form').scrollIntoView({ behavior: 'smooth' });
+      return;
+    }
+    if (cart.count === 0) {
+      alert('Your cart is empty.');
+      return;
+    }
+
+    const orderLines = cart.items.map(i => {
+      const opts = i.options ? ` (${i.options})` : '';
+      return `${i.qty}× ${i.name}${opts} — $${i.lineTotal.toFixed(2)}`;
+    }).join('\n');
+    const orderText = `New order from ${name}\nPhone: ${phone}\nPickup: ${pickup || '(none specified)'}\n\n${orderLines}\n\nTotal: $${cart.total.toFixed(2)}`;
+
+    // Send via Formspree
+    try {
+      const res = await fetch(CONFIG.formspreeEndpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          subject: `New order — ${name} — $${cart.total.toFixed(2)}`,
+          name, phone, pickup,
+          order: orderText,
+          total: `$${cart.total.toFixed(2)}`
+        })
+      });
+      if (!res.ok) throw new Error('Formspree error');
+    } catch (err) {
+      alert('Could not send the order email. Please text the order directly. Sorry!');
+      return;
+    }
+
+    // Build confirmation + Venmo deep link
+    const note = encodeURIComponent(`${CONFIG.bakeryName} order — ${name}`);
+    const amount = cart.total.toFixed(2);
+    const venmoUrl = `https://venmo.com/${CONFIG.venmoUsername}?txn=pay&amount=${amount}&note=${note}`;
+
+    const summaryEl = document.getElementById('order-summary');
+    summaryEl.innerHTML = cart.items.map(i => {
+      const opts = i.options ? `<br><span style="color:var(--muted);font-size:12px;">${i.options}</span>` : '';
+      return `<div class="line"><span>${i.qty}× ${i.name}${opts}</span><span>$${i.lineTotal.toFixed(2)}</span></div>`;
+    }).join('') + `<div class="line total"><span>Total</span><span>$${amount}</span></div>`;
+
+    document.getElementById('venmo-link').href = venmoUrl;
+    document.getElementById('venmo-link').textContent = `Pay $${amount} on Venmo`;
+
+    document.getElementById('ordering-view').style.display = 'none';
+    document.getElementById('confirmation').classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+</script>
+
+</body>
+</html>
