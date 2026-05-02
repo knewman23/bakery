@@ -665,7 +665,13 @@
     }
 
     // Build confirmation + Venmo deep link
-    const note = encodeURIComponent(`${CONFIG.bakeryName} order — ${name}`);
+    const orderItems = cart.items.map(i => {
+      const opts = i.options ? ` (${i.options})` : '';
+      return `${i.qty}x ${i.name}${opts}`;
+    }).join(', ');
+    // Use non-breaking spaces so iOS universal-link handling doesn't form-encode them to '+'
+    const noteText = `${CONFIG.bakeryName} - ${name}: ${orderItems}`.replace(/ /g, ' ');
+    const note = encodeURIComponent(noteText);
     const amount = cart.total.toFixed(2);
     const venmoUrl = `https://venmo.com/${CONFIG.venmoUsername}?txn=pay&amount=${amount}&note=${note}`;
 
